@@ -7,3 +7,7 @@ __pycache__/
 
 # IDE
 .vscode/
+
+# Ignore data files but keep directory structure
+data/scenario/*
+!data/scenario/.gitkeep
