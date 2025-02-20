@@ -1,0 +1,30 @@
+services:
+  convert:
+    container_name: dss_converter
+    build: .
+    volumes:
+      - "${PWD}:/app"
+      - "${PWD}/../data/scenario:/data/scenario"
+    working_dir: /app
+    entrypoint: ["python", "python-code/dss_to_csv.py"]
+
+  validate-sample:
+    container_name: dss_validator_sample
+    build: .
+    volumes:
+      - "${PWD}:/app"
+      - "${PWD}/../data/scenario:/data/scenario"
+    working_dir: /app
+    entrypoint: ["python", "python-code/validate_dss_to_csv.py"]
+    
+  validate-all:
+    container_name: dss_validator
+    build: .
+    volumes:
+      - "${PWD}:/app"
+      - "${PWD}/../data/scenario:/data/scenario"
+    working_dir: /app
+    entrypoint: ["python", "python-code/validate_dss_to_csv.py", "--all"]
+
+
+
