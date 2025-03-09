@@ -21,21 +21,23 @@ The repository includes Python files for exporting DSS files to CSV and for vali
 
 ## Steps to Use
 
-1. **Install Docker Desktop**: If necessary, download Docker from [Docker's website](https://www.docker.com/). If you are on a Mac and get malware warnings, see the notes above. Start up Docker. You can test your installation by running:
-   `> docker info`
+1. **Install Docker Desktop**: If necessary, download Docker from [Docker's website](https://www.docker.com/). If you are on a Mac and get malware warnings, see the notes above. Start up the Docker app. You can test your installation by running:
+   ```bash
+   > docker info`
+   ```
 
-2. **Clone the Repository**: And `cd` into the directory.
+3. **Clone the Repository**: And `cd` into the directory.
 
-3. **Edit `docker-compose.yml` if you want to change the data directory**: The `docker-compose.yml` is set up with relative directories. You can place your CalSim3 `DSS` output files in the `data/scenario` directory. For your first run, I recommend using this directory structure as a trial.
+4. **Edit `docker-compose.yml` if you want to change the data directory**: The `docker-compose.yml` is set up with relative directories. You can place your CalSim3 `DSS` output files in the `data/scenario` directory. For your first run, I recommend using this directory structure as a trial.
 
-4. **Build the Docker Image**:
+5. **Build the Docker Image**:
    ```bash
    > cd pydsstools-docker
    > docker-compose build
    ```
    Building takes a few minutes. Once the image is built, you don't have to build it again.
 
-5. **Run Services**: See the `docker-compose` file for available services. Run them with the following command:
+6. **Run Services**: See the `docker-compose` file for available services. Run them with the following command:
    ```bash
    > docker-compose run <service> --dss /data/scenario/<filename>.dss --csv /data/scenario/<filename>.csv
    ```
@@ -45,7 +47,7 @@ The repository includes Python files for exporting DSS files to CSV and for vali
    ```
    You will see all the paths print on the console. This is a function of the `pydsstools` library. Once they have all printed, the console will hang for a bit. You have time for a cup of coffee. It takes about 5 minutes to run the process.
 
-6. **Stop Services**: When done, stop running services using:
+7. **Stop Services**: When done, stop running services using:
    ```bash
    > docker-compose down
    ```
