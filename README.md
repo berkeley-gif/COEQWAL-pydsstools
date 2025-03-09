@@ -23,7 +23,7 @@ The repository includes Python files for exporting DSS files to CSV and for vali
 
 1. **Install Docker Desktop**: If necessary, download Docker from [Docker's website](https://www.docker.com/). If you are on a Mac and get malware warnings, see the notes above. Start up the Docker app. You can test your installation by running:
    ```bash
-   > docker info`
+   > docker info
    ```
 
 3. **Clone the Repository**: And `cd` into the directory.
