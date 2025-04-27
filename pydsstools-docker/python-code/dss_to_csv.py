@@ -66,7 +66,10 @@ def export_all_paths_to_csv(dss_file_path, output_csv_path):
     })
 
     final_df = pd.concat([header_df, combined_df], ignore_index=True)
-    os.makedirs(os.path.dirname(output_csv_path), exist_ok=True)
+    # Create output directory if a folder path is provided
+    output_dir = os.path.dirname(output_csv_path)
+    if output_dir:
+        os.makedirs(output_dir, exist_ok=True)
     
     final_df.to_csv(output_csv_path, index=False, header=False, na_rep='NaN')
     print(f"✅ Exported to '{output_csv_path}'")
