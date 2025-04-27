@@ -5,7 +5,7 @@ This repository contains Python scripts to convert CalSim3 output DSS files into
 ## Requirements
 
 - **Compatibility**: The `pydsstools` library is compatible with 64-bit Python on Windows 10 and Ubuntu-like Linux distributions. For Linux, ensure that `zlib`, `math`, `quadmath`, and `gfortran` libraries are installed.
-- **Dependencies**: This library depends on `heclib.a`, which must be installed correctly.
+- **Dependencies**: This library depends on `heclib.a`, which must be installed correctly, which is why we are using Docker.
 
 ## Docker Setup
 
