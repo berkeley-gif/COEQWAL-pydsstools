@@ -111,9 +111,29 @@ Quick-start (after building Docker image, see above)
 ```
 
 > **Tip** Run these `docker compose` commands from inside the
-> `pydsstools-docker/` folder.  Inside the container, the project’s top-level
+> `pydsstools-docker/` folder.  Inside the container, the project's top-level
 > `data/` directory is mounted at **`/data`**, so the paths you see below will
 > resolve automatically.
 
 ### 3. Produce Level-1 after deciding what to drop
-``
+```bash
+> docker compose run --rm csv-levels 1 \
+  /data/10_level0_raw_csv/scenarioA_L0.csv \
+  /data/20_level1_filtered/scenarioA_L1.csv \
+  --drop JUNKC1 JUNKC2
+```
+
+### 4. Map remaining Part-C → Part-B combinations (after Level-1)
+```bash
+> docker compose run --rm csv-levels mapBC \
+  /data/20_level1_filtered/scenarioA_L1.csv \
+  --mapfile /data/30_variable_maps/PartsBC.txt
+```
+
+### 5. Build Level-2 using an edited YAML keep-list
+```bash
+> docker compose run --rm csv-levels 2 \
+  /data/20_level1_filtered/scenarioA_L1.csv \
+  /data/50_level2_final/scenarioA_L2.csv \
+  --config /data/40_configs/scenarioA_keep.yml
+```
