@@ -71,7 +71,7 @@ COEQWAL-pydsstools/
 │   │   └── scenarioA.dss
 │   ├── 10_level0_raw_csv/    # Level-0 CSVs (1-to-1 export)
 │   │   └── scenarioA_L0.csv
-│   ├── 20_level1_filtered/   # Level-1 CSVs (after dropping whole Part C’s)
+│   ├── 20_level1_filtered/   # Level-1 CSVs (after dropping whole Part C's)
 │   │   └── scenarioA_L1.csv
 │   ├── 30_variable_maps/     # helper text files for manual review
 │   │   ├── PartC.txt         # unique Part-C list
@@ -94,36 +94,39 @@ Quick-start (after building Docker image, see above)
 ----------------------------------------------------
 
 ### 1. Build Level-0 CSV (inside the container)
-docker compose run --rm convert \
+```bash
+> docker compose run --rm convert \
   --dss  /data/00_dss/scenarioA.dss \
   --csv  /data/10_level0_raw_csv/scenarioA_L0.csv
+```
 
 
 ### 2. List all unique Part-C values
-docker compose run --rm convert \
-  python python-code/csv_levels.py listC \
-         /data/10_level0_raw_csv/scenarioA_L0.csv \
-         data/30_variable_maps/PartC.txt
-
+```bash
+docker compose run --rm csv-levels listC \
+  /data/10_level0_raw_csv/scenarioA_L0.csv \
+  > /data/30_variable_maps/PartC.txt
+```
 
 ### 3. Produce Level-1 after deciding what to drop
-docker compose run --rm convert \
-  python python-code/csv_levels.py 1 \
-         /data/10_level0_raw_csv/scenarioA_L0.csv \
-         /data/20_level1_filtered/scenarioA_L1.csv \
-         --drop JUNKC1 JUNKC2
-
+```bash
+docker compose run --rm csv-levels 1 \
+  /data/10_level0_raw_csv/scenarioA_L0.csv \
+  /data/20_level1_filtered/scenarioA_L1.csv \
+  --drop JUNKC1 JUNKC2
+```
 
 ### 4. Map remaining Part-C → Part-B combinations (after Level-1)
-docker compose run --rm convert \
-  python python-code/csv_levels.py mapBC \
-         /data/20_level1_filtered/scenarioA_L1.csv \
-         --mapfile /data/30_variable_maps/PartsBC.txt
-
+```bash
+docker compose run --rm csv-levels mapBC \
+  /data/20_level1_filtered/scenarioA_L1.csv \
+  --mapfile /data/30_variable_maps/PartsBC.txt
+```
 
 ### 5. Build Level-2 using an edited YAML keep-list
-docker compose run --rm convert \
-  python python-code/csv_levels.py 2 \
-         /data/20_level1_filtered/scenarioA_L1.csv \
-         /data/50_level2_final/scenarioA_L2.csv \
-         --config /data/40_configs/scenarioA_keep.yml
+```bash
+docker compose run --rm csv-levels 2 \
+  /data/20_level1_filtered/scenarioA_L1.csv \
+  /data/50_level2_final/scenarioA_L2.csv \
+  --config /data/40_configs/scenarioA_keep.yml
+  ```

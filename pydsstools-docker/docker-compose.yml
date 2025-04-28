@@ -1,35 +1,31 @@
 services:
-  convert:
-    container_name: dss_converter
+  # Re-usable settings for all services (build context, mounts, workdir)
+  _common: &common
     build: .
     volumes:
-      # Mount codebase (inside pydsstools-docker) as /app
-      - "${PWD}:/app"
-      # Mount repo-level data directory as /data (../data from pydsstools-docker)
-      - "${PWD}/../data:/data"
+      - "${PWD}:/app"               # codebase mounted at /app inside container
+      - "${PWD}/../data:/data"      # repo-level data directory mounted at /data
     working_dir: /app
+
+  convert:
+    <<: *common
+    container_name: dss_converter
     entrypoint: ["python", "python-code/dss_to_csv.py"]
 
+  # Generic service to run csv_levels.py helpers (Level-0 ➜ Level-2, listC, mapBC)
+  csv-levels:
+    <<: *common
+    container_name: csv_levels_helper
+    entrypoint: ["python", "python-code/csv_levels.py"]
+
   validate-sample:
+    <<: *common
     container_name: dss_validator_sample
-    build: .
-    volumes:
-      # Mount codebase (inside pydsstools-docker) as /app
-      - "${PWD}:/app"
-      # Mount repo-level data directory as /data (../data from pydsstools-docker)
-      - "${PWD}/../data:/data"
-    working_dir: /app
     entrypoint: ["python", "python-code/validate_dss_to_csv.py"]
-    
+
   validate-all:
+    <<: *common
     container_name: dss_validator
-    build: .
-    volumes:
-      # Mount codebase (inside pydsstools-docker) as /app
-      - "${PWD}:/app"
-      # Mount repo-level data directory as /data (../data from pydsstools-docker)
-      - "${PWD}/../data:/data"
-    working_dir: /app
     entrypoint: ["python", "python-code/validate_dss_to_csv.py", "--all"]
 
 
