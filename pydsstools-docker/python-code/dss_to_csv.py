@@ -1,4 +1,5 @@
 from pydsstools.heclib.dss import HecDss
+from pandas.tseries.offsets import MonthEnd
 import pandas as pd
 import numpy as np
 import os
@@ -43,8 +44,12 @@ def export_all_paths_to_csv(dss_file_path, output_csv_path):
             values = np.where(data.values == -901, np.nan, data.values)
             
             for dt, value in zip(data.pytimes, values):
-                time_series_groups[series_key]['data'][dt] = value
-                all_datetimes.add(dt)
+                # All series are monthly ⇒ shift timestamp back one month so
+                # value represents previous month (end-of-month)
+                ts_dt = pd.Timestamp(dt).normalize() - MonthEnd(1)
+
+                time_series_groups[series_key]['data'][ts_dt] = value
+                all_datetimes.add(ts_dt)
         
         except Exception as e:
             print(f"⚠️ Warning: Error processing '{pathname}': {e}")
@@ -60,7 +65,17 @@ def export_all_paths_to_csv(dss_file_path, output_csv_path):
         series_data = [info['data'].get(dt, np.nan) for dt in sorted_datetimes]
         dfs_to_concat.append(pd.DataFrame({column_name: series_data}))
 
-    combined_df = pd.concat(dfs_to_concat, axis=1)
+    combined = pd.concat(dfs_to_concat, axis=1)
+
+    # Clip to modeller's expected date window
+    START_DATE = pd.Timestamp("1921-10-31")
+    END_DATE   = pd.Timestamp("2021-09-30")
+    combined = combined[(combined["DateTime"] >= START_DATE) &
+                         (combined["DateTime"] <= END_DATE)]
+
+    # Drop rows where every data column (excluding DateTime) is NaN
+    if combined.shape[1] > 1:
+        combined = combined[combined.iloc[:, 1:].notna().any(axis=1)]
 
     header_df = pd.DataFrame({
         'DateTime': ['A', 'B', 'C', 'D', 'E', 'F', 'UNITS'],
@@ -69,7 +84,7 @@ def export_all_paths_to_csv(dss_file_path, output_csv_path):
         ] for info in [time_series_groups[key] for key in sorted_keys]}
     })
 
-    final_df = pd.concat([header_df, combined_df], ignore_index=True)
+    final_df = pd.concat([header_df, combined], ignore_index=True)
     # Create output directory if a folder path is provided
     output_dir = os.path.dirname(output_csv_path)
     if output_dir:
