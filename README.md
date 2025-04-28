@@ -95,6 +95,11 @@ COEQWAL-pydsstools/
 Quick-start (after building Docker image, see above)
 ----------------------------------------------------
 
+> **Tip** Run these `docker compose` commands from inside the
+> `pydsstools-docker/` folder.  Inside the container, the project's top-level
+> `data/` directory is mounted at **`/data`**, so the paths you see below will
+> resolve automatically.
+
 ### 1. Build Level-0 CSV
 ```bash
 > docker compose run --rm convert \
@@ -109,11 +114,6 @@ Quick-start (after building Docker image, see above)
   /data/10_level0_raw_csv/scenarioA_L0.csv \
   --outfile /data/30_variable_maps/PartC.txt
 ```
-
-> **Tip** Run these `docker compose` commands from inside the
-> `pydsstools-docker/` folder.  Inside the container, the project's top-level
-> `data/` directory is mounted at **`/data`**, so the paths you see below will
-> resolve automatically.
 
 ### 3. Produce Level-1 after deciding what to drop
 ```bash
