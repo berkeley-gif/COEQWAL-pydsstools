@@ -90,7 +90,7 @@ COEQWAL-pydsstools/
     └── docker-compose.yml
 ```
 
-## DSS→variables pipeline
+## DSS → COEQWAL variables pipeline
 
 Quick-start (after building Docker image, see above)
 ----------------------------------------------------
