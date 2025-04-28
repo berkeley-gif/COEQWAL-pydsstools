@@ -32,7 +32,7 @@ def export_all_paths_to_csv(dss_file_path, output_csv_path):
             data = dss.read_ts(pathname)
             parts = pathname.split('/')
             a, b, c, d, e, f = parts[1:7]
-            series_key = f"{b}_{c}_{e}_{f}"
+            series_key = f"{b}_{c}"
 
             if series_key not in time_series_groups:
                 time_series_groups[series_key] = {
