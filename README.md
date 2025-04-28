@@ -95,7 +95,7 @@ COEQWAL-pydsstools/
 Quick-start (after building Docker image, see above)
 ----------------------------------------------------
 
-### 1. Build Level-0 CSV (inside the container)
+### 1. Build Level-0 CSV
 ```bash
 > docker compose run --rm convert \
   --dss  /data/00_dss/scenarioA.dss \
