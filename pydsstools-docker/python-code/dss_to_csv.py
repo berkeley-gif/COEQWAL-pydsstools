@@ -34,7 +34,11 @@ def export_all_paths_to_csv(dss_file_path, output_csv_path):
             series_key = f"{b}_{c}_{e}_{f}"
 
             if series_key not in time_series_groups:
-                time_series_groups[series_key] = {'data': {}, 'a': a, 'b': b, 'c': c, 'd': d, 'e': e, 'f': f}
+                time_series_groups[series_key] = {
+                    'data': {},
+                    'a': a, 'b': b, 'c': c, 'd': d, 'e': e, 'f': f,
+                    'units': getattr(data, 'units', '')
+                }
 
             values = np.where(data.values == -901, np.nan, data.values)
             
@@ -59,9 +63,9 @@ def export_all_paths_to_csv(dss_file_path, output_csv_path):
     combined_df = pd.concat(dfs_to_concat, axis=1)
 
     header_df = pd.DataFrame({
-        'DateTime': ['A', 'B', 'C', 'D', 'E', 'F'],
+        'DateTime': ['A', 'B', 'C', 'D', 'E', 'F', 'UNITS'],
         **{f"{info['b']}_{info['c']}_{info['f']}": [
-            info['a'], info['b'], info['c'], info['d'], info['e'], info['f']
+            info['a'], info['b'], info['c'], info['d'], info['e'], info['f'], info['units']
         ] for info in [time_series_groups[key] for key in sorted_keys]}
     })
 
