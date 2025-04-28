@@ -88,25 +88,25 @@ COEQWAL-pydsstools/
     ├── Dockerfile
     └── docker-compose.yml
 
-# DSS→variables pipeline
+## DSS→variables pipeline
 
 Quick-start (after building Docker image, see above)
 ----------------------------------------------------
 
-# 1. Build Level-0 CSV (inside the container)
+### 1. Build Level-0 CSV (inside the container)
 docker compose run --rm convert \
   --dss  /data/00_dss/scenarioA.dss \
   --csv  /data/10_level0_raw_csv/scenarioA_L0.csv
 
 
-# 2. List all unique Part-C values
+### 2. List all unique Part-C values
 docker compose run --rm convert \
   python python-code/csv_levels.py listC \
          /data/10_level0_raw_csv/scenarioA_L0.csv \
-  > data/30_variable_maps/PartC.txt
+         data/30_variable_maps/PartC.txt
 
 
-# 3. Produce Level-1 after deciding what to drop
+### 3. Produce Level-1 after deciding what to drop
 docker compose run --rm convert \
   python python-code/csv_levels.py 1 \
          /data/10_level0_raw_csv/scenarioA_L0.csv \
@@ -114,14 +114,14 @@ docker compose run --rm convert \
          --drop JUNKC1 JUNKC2
 
 
-# 4. Map remaining Part-C → Part-B combinations (after Level-1)
+### 4. Map remaining Part-C → Part-B combinations (after Level-1)
 docker compose run --rm convert \
   python python-code/csv_levels.py mapBC \
          /data/20_level1_filtered/scenarioA_L1.csv \
          --mapfile /data/30_variable_maps/PartsBC.txt
 
 
-# 5. Build Level-2 using an edited YAML keep-list
+### 5. Build Level-2 using an edited YAML keep-list
 docker compose run --rm convert \
   python python-code/csv_levels.py 2 \
          /data/20_level1_filtered/scenarioA_L1.csv \
