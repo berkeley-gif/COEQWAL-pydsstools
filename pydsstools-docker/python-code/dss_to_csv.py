@@ -38,7 +38,8 @@ def export_all_paths_to_csv(dss_file_path, output_csv_path):
                 time_series_groups[series_key] = {
                     'data': {},
                     'a': a, 'b': b, 'c': c, 'd': d, 'e': e, 'f': f,
-                    'units': getattr(data, 'units', '')
+                    'units': getattr(data, 'units', ''),
+                    'type': getattr(data, 'type', '')
                 }
 
             values = np.where(data.values == -901, np.nan, data.values)
@@ -80,7 +81,13 @@ def export_all_paths_to_csv(dss_file_path, output_csv_path):
     header_df = pd.DataFrame({
         'DateTime': ['A', 'B', 'C', 'D', 'E', 'F', 'UNITS'],
         **{f"{info['b']}_{info['c']}_{info['f']}": [
-            info['a'], info['b'], info['c'], info['d'], info['e'], info['f'], info['units']
+            info['a'],                      # Row A: Part A
+            info['b'],                      # Row B: Part B
+            info['c'],                      # Row C: Part C
+            info['e'],                      # Row D: *Part E* per new mapping
+            info['f'],                      # Row E: *Part F* per new mapping
+            info.get('type', ''),           # Row F: record type (INST-VAL, PER-VAL, ...)
+            info['units']                  # Row UNITS: units string
         ] for info in [time_series_groups[key] for key in sorted_keys]}
     })
 
