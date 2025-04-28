@@ -30,26 +30,29 @@ import yaml
 import pandas as pd
 from pathlib import Path
 
-HEADER_ROWS = 7  # Rows 0-6 contain metadata (A, B, C, D, E, TYPE, UNITS)
+HEADER_ROWS = 7  # Rows 0-6 contain metadata (A, B, C, D, E, F, UNITS)
 
 META_LABELS = [
-    'A', 'B', 'C', 'D', 'E', 'TYPE', 'UNITS'
+    'A', 'B', 'C', 'D', 'E', 'F', 'UNITS'  # some exports label the 6th row as F or TYPE
 ]
 
 
 def read_level0(csv_path: Path):
     """Read Level-0 CSV exported by dss_to_csv.py and split header/meta."""
-    df = pd.read_csv(csv_path, header=None)
+    # Read entire CSV as strings to avoid Pandas mixed-dtype warnings; we are
+    # not doing arithmetic on the values here, just slicing columns.
+    df = pd.read_csv(csv_path, header=None, dtype=str, low_memory=False)
     header = df.iloc[:HEADER_ROWS].copy()
     data = df.iloc[HEADER_ROWS:].reset_index(drop=True)
 
     # Build a meta-data DataFrame: one row per column (skip DateTime col)
     meta_df = (
-        header.iloc[1:, 1:]  # drop DateTime column
+        header.iloc[:, 1:]  # keep all 7 metadata rows; drop DateTime column only
         .T
         .reset_index(drop=True)
     )
-    meta_df.columns = META_LABELS
+    # align column names; if export uses TYPE instead of F, user can rename later
+    meta_df.columns = META_LABELS[: meta_df.shape[1]]
     return header, data, meta_df, df
 
 

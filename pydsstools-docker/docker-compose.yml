@@ -1,12 +1,12 @@
+x-common: &common
+  build: .
+  volumes:
+    - "${PWD}:/app"               # codebase mounted at /app inside container
+    - "${PWD}/../data:/data"      # repo-level data directory mounted at /data
+  working_dir: /app
+
 services:
   # Re-usable settings for all services (build context, mounts, workdir)
-  _common: &common
-    build: .
-    volumes:
-      - "${PWD}:/app"               # codebase mounted at /app inside container
-      - "${PWD}/../data:/data"      # repo-level data directory mounted at /data
-    working_dir: /app
-
   convert:
     <<: *common
     container_name: dss_converter

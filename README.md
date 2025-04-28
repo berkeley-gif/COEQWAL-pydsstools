@@ -92,7 +92,7 @@ COEQWAL-pydsstools/
 
 ## DSS → COEQWAL variables pipeline
 
-Quick-start (after building Docker image, see above)
+### Quick-start (after building Docker image, see above)
 ----------------------------------------------------
 
 > **Tip** Run these `docker compose` commands from inside the

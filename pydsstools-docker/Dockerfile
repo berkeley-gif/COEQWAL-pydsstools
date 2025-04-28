@@ -20,7 +20,7 @@ RUN mkdir -p /pydsstools/src/external/dss/linux64 \
 COPY heclib/heclib.a /pydsstools/src/external/dss/linux64/
 
 # Install specific versions of Python dependencies (found through trial and error)
-RUN pip install numpy==1.23.5 pandas==1.5.3 setuptools wheel
+RUN pip install numpy==1.23.5 pandas==1.5.3 PyYAML==6.0 setuptools wheel
 
 # Set environment variables for compilation
 ENV CFLAGS="-I/usr/include -I/pydsstools/src/external/dss/headers -I/pydsstools/src/external/gridv6/headers"
