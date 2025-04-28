@@ -109,6 +109,7 @@ if __name__ == "__main__":
                         help="Regex patterns to drop B-parts when building Level-1")
     parser.add_argument("--config", help="YAML with mapping of C: [B1, B2, ...] for Level-2")
     parser.add_argument("--mapfile", help="If provided with mapBC, write the mapping to this text file instead of stdout")
+    parser.add_argument("--outfile", help="If provided with listC, write the Part-C list to this text file instead of stdout")
 
     args = parser.parse_args()
 
@@ -129,8 +130,11 @@ if __name__ == "__main__":
 
     if args.mode == "listC":
         unique_c = sorted(meta['C'].unique())
-        for c in unique_c:
-            print(c)
+        if args.outfile:
+            Path(args.outfile).write_text("\n".join(unique_c) + "\n")
+        else:
+            for c in unique_c:
+                print(c)
         sys.exit(0)
 
     if args.mode == "mapBC":
