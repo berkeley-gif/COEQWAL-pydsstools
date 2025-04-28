@@ -3,8 +3,10 @@ services:
     container_name: dss_converter
     build: .
     volumes:
+      # Mount codebase (inside pydsstools-docker) as /app
       - "${PWD}:/app"
-      - "${PWD}/../data/scenario:/data/scenario"
+      # Mount repo-level data directory as /data (../data from pydsstools-docker)
+      - "${PWD}/../data:/data"
     working_dir: /app
     entrypoint: ["python", "python-code/dss_to_csv.py"]
 
@@ -12,8 +14,10 @@ services:
     container_name: dss_validator_sample
     build: .
     volumes:
+      # Mount codebase (inside pydsstools-docker) as /app
       - "${PWD}:/app"
-      - "${PWD}/../data/scenario:/data/scenario"
+      # Mount repo-level data directory as /data (../data from pydsstools-docker)
+      - "${PWD}/../data:/data"
     working_dir: /app
     entrypoint: ["python", "python-code/validate_dss_to_csv.py"]
     
@@ -21,8 +25,10 @@ services:
     container_name: dss_validator
     build: .
     volumes:
+      # Mount codebase (inside pydsstools-docker) as /app
       - "${PWD}:/app"
-      - "${PWD}/../data/scenario:/data/scenario"
+      # Mount repo-level data directory as /data (../data from pydsstools-docker)
+      - "${PWD}/../data:/data"
     working_dir: /app
     entrypoint: ["python", "python-code/validate_dss_to_csv.py", "--all"]
 

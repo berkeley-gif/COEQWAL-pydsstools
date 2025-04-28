@@ -28,7 +28,7 @@ The repository includes Python files for exporting DSS files to CSV and for vali
 
 3. **Clone the Repository**: And `cd` into the directory.
 
-4. **Edit `docker-compose.yml` if you want to change the data directory**: The `docker-compose.yml` is set up with relative directories. You can place your CalSim3 `DSS` output files in the `data/scenario` directory. For your first run, I recommend using this directory structure as a trial.
+4. **Edit `docker-compose.yml` if you want to change the data directory**: The `docker-compose.yml` is set up with relative directories. See the directory documenation below. For at least your first run, I recommend using this directory structure as a trial.
 
 5. **Build the Docker Image**:
    ```bash
@@ -52,3 +52,78 @@ The repository includes Python files for exporting DSS files to CSV and for vali
    > docker-compose down
    ```
 Use Docker commands as normal. For example, to avoid voluminous print output, you can run Docker in the background with the `-d` flag. To automatically remove the container when it stops, use the `--rm` flag.
+
+# Variable filtering pipeline
+
+This respository also contains files and a suggested data directly structure to create a pipeline for different levels of csv processing:
+
+- Level 0: csv format directly from DSS output
+- Level 1: csv with system and validation variables removed through Part C filtering
+- Level 2: final variable csv for the COEQWAL website
+
+## Suggested directory tree
+
+COEQWAL-pydsstools/
+├── README.md
+│
+├── data/                     
+│   ├── 00_dss/               # raw DSS output files
+│   │   └── scenarioA.dss
+│   ├── 10_level0_raw_csv/    # Level-0 CSVs (1-to-1 export)
+│   │   └── scenarioA_L0.csv
+│   ├── 20_level1_filtered/   # Level-1 CSVs (after dropping whole Part C’s)
+│   │   └── scenarioA_L1.csv
+│   ├── 30_variable_maps/     # helper text files for manual review
+│   │   ├── PartC.txt         # unique Part-C list
+│   │   └── PartsBC.txt       # Part-C ➜ Part-B map
+│   ├── 40_configs/           # YAML keep-lists used to create Level-2
+│   │   └── scenarioA_keep.yml
+│   └── 50_level2_final/      # Level-2, database-ready CSVs
+│       └── scenarioA_L2.csv
+│
+└── pydsstools-docker/        # all runnable code + container build
+    ├── python-code/
+    │   ├── dss_to_csv.py     # Level-0 exporter
+    │   └── csv_levels.py     # multi-mode helper (0,1,2,listC,mapBC)
+    ├── Dockerfile
+    └── docker-compose.yml
+
+# DSS→variables pipeline
+
+Quick-start (after building Docker image, see above)
+----------------------------------------------------
+
+# 1. Build Level-0 CSV (inside the container)
+docker compose run --rm convert \
+  --dss  /data/00_dss/scenarioA.dss \
+  --csv  /data/10_level0_raw_csv/scenarioA_L0.csv
+
+
+# 2. List all unique Part-C values
+docker compose run --rm convert \
+  python python-code/csv_levels.py listC \
+         /data/10_level0_raw_csv/scenarioA_L0.csv \
+  > data/30_variable_maps/PartC.txt
+
+
+# 3. Produce Level-1 after deciding what to drop
+docker compose run --rm convert \
+  python python-code/csv_levels.py 1 \
+         /data/10_level0_raw_csv/scenarioA_L0.csv \
+         /data/20_level1_filtered/scenarioA_L1.csv \
+         --drop JUNKC1 JUNKC2
+
+
+# 4. Map remaining Part-C → Part-B combinations (after Level-1)
+docker compose run --rm convert \
+  python python-code/csv_levels.py mapBC \
+         /data/20_level1_filtered/scenarioA_L1.csv \
+         --mapfile /data/30_variable_maps/PartsBC.txt
+
+
+# 5. Build Level-2 using an edited YAML keep-list
+docker compose run --rm convert \
+  python python-code/csv_levels.py 2 \
+         /data/20_level1_filtered/scenarioA_L1.csv \
+         /data/50_level2_final/scenarioA_L2.csv \
+         --config /data/40_configs/scenarioA_keep.yml
