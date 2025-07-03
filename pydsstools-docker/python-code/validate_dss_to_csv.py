@@ -37,7 +37,7 @@ def validate_dss_to_csv(dss_file_path, csv_file_path, validate_all=True):
         else:
             pathnames_to_check = available_pathnames[:5]
         
-        print(f"\nValidating {'all' if validate_all else '5'} pathnames...")
+        print(f"\nValidating {'all' if validate_all else '5'} paths...")
         print("Processing...", end="", flush=True)
         
         total_validated = 0
@@ -114,8 +114,8 @@ def validate_dss_to_csv(dss_file_path, csv_file_path, validate_all=True):
 
         # Print final summary
         print("\n\n=== VALIDATION SUMMARY ===")
-        print(f"Total pathnames validated: {total_validated}")
-        print(f"Pathnames with mismatches: {total_mismatches}")
+        print(f"Total paths validated: {total_validated}")
+        print(f"Paths with mismatches: {total_mismatches}")
         
         if mismatch_details:
             print("\nMISMATCH DETAILS:")
@@ -139,7 +139,7 @@ if __name__ == "__main__":
     parser = argparse.ArgumentParser(description='Validate DSS to CSV conversion')
     parser.add_argument('--dss', type=str, required=True, help='Path to DSS file')
     parser.add_argument('--csv', type=str, required=True, help='Path to CSV file')
-    parser.add_argument('--all', action='store_true', help='Validate all pathnames instead of just a sample')
+    parser.add_argument('--all', action='store_true', help='Validate all paths instead of just a sample')
     args = parser.parse_args()
 
     validate_dss_to_csv(args.dss, args.csv, validate_all=args.all)
