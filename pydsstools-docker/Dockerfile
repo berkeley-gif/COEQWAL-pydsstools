@@ -29,6 +29,7 @@ RUN pip install --no-cache-dir \
     pandas==2.0.3 \
     PyYAML==6.0.1 \
     psutil==5.9.8 \
+    psycopg2-binary==2.9.9 \
     setuptools \
     wheel
 

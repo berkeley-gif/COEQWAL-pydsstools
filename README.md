@@ -39,7 +39,7 @@ The repository includes Python files for exporting DSS files to CSV and for vali
 
 6. **Run Services**: See the `docker-compose` file for available services. The command structure is as in the following examples.
 
-To extract data from the dss to csv:
+To extract data from the CalSim dss to csv:
 
    ```bash
    > docker-compose run <service> --dss /data/scenario/<filename>.dss --csv /data/scenario/<filename>.csv

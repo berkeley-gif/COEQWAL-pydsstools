@@ -34,5 +34,11 @@ services:
     container_name: csv_comparator
     entrypoint: ["python", "python-code/compare_csv_files.py"]
 
+  # Direct DSS-to-Database ETL service
+  dss-to-db:
+    <<: *common
+    container_name: dss_to_database
+    entrypoint: ["python", "python-code/dss_to_database.py"]
+
 
 
