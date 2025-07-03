@@ -28,5 +28,11 @@ services:
     container_name: dss_validator
     entrypoint: ["python", "python-code/validate_dss_to_csv.py", "--all"]
 
+  # CSV-to-CSV comparison service
+  compare-csv:
+    <<: *common
+    container_name: csv_comparator
+    entrypoint: ["python", "python-code/compare_csv_files.py"]
+
 
 
