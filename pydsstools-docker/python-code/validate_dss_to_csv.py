@@ -17,8 +17,9 @@ def validate_dss_to_csv(dss_file_path, csv_file_path, validate_all=True):
                             keep_default_na=True)
         
         # Get the header rows and data rows
-        header_df = csv_df.iloc[:6].copy()
-        data_df = csv_df.iloc[6:].copy()
+        # CSV format: A, B, C, D, E, F, UNITS (7 header rows), then data
+        header_df = csv_df.iloc[:7].copy()
+        data_df = csv_df.iloc[7:].copy()
         
         # Set column names from first row of header
         data_df.columns = header_df.iloc[1]
