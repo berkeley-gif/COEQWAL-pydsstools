@@ -4,7 +4,7 @@ This repository contains Python scripts to convert CalSim3 output DSS files into
 
 ## Requirements
 
-- **Compatibility**: The `pydsstools` library is compatible with 64-bit Python on Windows 10 and Ubuntu-like Linux distributions. For Linux, ensure that `zlib`, `math`, `quadmath`, and `gfortran` libraries are installed.
+- **Compatibility**: The `pydsstools` library is compatible with 64-bit Python on Windows 10 and Ubuntu-like Linux distributions. For Linux, ensure that `zlib`, `math`, `quadmath`, and `gfortran` libraries are installed. Using the Docker container in this repo will ensure this.
 - **Dependencies**: This library depends on `heclib.a`, which must be installed correctly, which is why we are using Docker.
 
 ## Docker Setup
@@ -13,11 +13,11 @@ Included in the repository is a `Dockerfile` that runs a Linux container and ins
 
 ### Mac Users
 
-If you are on a Mac, you may encounter issues installing Docker. I had these issues, so I've included the `docker-fix` files in this repo. See: [Docker for Mac Issue #7527](https://github.com/docker/for-mac/issues/7527).
+If you are on a Mac, you may encounter issues installing Docker. I had these issues, so I've included the `docker-fix` files in this repo. See: [Docker for Mac Issue #7527](https://github.com/docker/for-mac/issues/7527). This issue has been resolved as of the start of 2025.
 
 ## Python Scripts
 
-The repository includes Python files for exporting DSS files to CSV and for validating them. Note that the `pydsstools` library prints every path as it processes it. I haven't been able to suppress this.
+The repository includes Python files for exporting DSS files to CSV and for validating them. Note that the `pydsstools` library prints every path as it processes it. I haven't been able to surpress this.
 
 ## Steps to Use
 
@@ -35,9 +35,12 @@ The repository includes Python files for exporting DSS files to CSV and for vali
    > cd pydsstools-docker
    > docker-compose build
    ```
-   Building takes a few minutes. Once the image is built, you don't have to build it again.
+   Building takes a few minutes. Once the image is built, you won't have to build it again.
 
-6. **Run Services**: See the `docker-compose` file for available services. Run them with the following command:
+6. **Run Services**: See the `docker-compose` file for available services. The command structure is as in the following examples.
+
+To extract data from the dss to csv:
+
    ```bash
    > docker-compose run <service> --dss /data/scenario/<filename>.dss --csv /data/scenario/<filename>.csv
    ```
@@ -47,15 +50,37 @@ The repository includes Python files for exporting DSS files to CSV and for vali
    ```
    You will see all the paths print on the console. This is a function of the `pydsstools` library. Once they have all printed, the console will hang for a bit. You have time for a cup of coffee. It takes about 5 minutes to run the process.
 
+To validate the resulting csv against overlapping columns in a reference csv (like the Trend Reports):
+
+   ```bash
+   > docker-compose run <service> --ref /data/scenario/<filename>.csv --file /data/scenario/<filename>.csv
+   ```
+   Example:
+   ```bash
+   > docker-compose run compare-csv --ref /data/scenario/s0011/coeqwal_s0011_adjBL_wTUCP_DV_v0.0.csv --file /data/scenario/s0011/s0011_output.csv
+   ```
+   Any discrepancies will print to the console. Float tolerance is set to 1e-5. You can set this value in the compare_csv_files.py. This test runs quickly.
+
+To validate the resulting csv against the original dss:
+
+   ```bash
+   > docker-compose run <service> --ref /data/scenario/<filename>.csv --file /data/scenario/<filename>.csv
+   ```
+   Example:
+   ```bash
+   > docker-compose run validate-sample --dss /data/scenario/s0011_adjBL_wTUCP/DSS/output/coeqwal_s0011_adjBL_wTUCP_DV_v0.0.dss --csv /data/scenario/s0011/s0011_output.csv
+   ```
+   Any discrepancies will print to the console. `validate-sample` is a quick smoke test that validates the first 5 columns. `validate-all` validates every value in every column and takes about 1/2 hour. Tolerance is 1e-10.
+
 7. **Stop Services**: When done, stop running services using:
    ```bash
    > docker-compose down
    ```
 Use Docker commands as normal. For example, to avoid voluminous print output, you can run Docker in the background with the `-d` flag. To automatically remove the container when it stops, use the `--rm` flag.
 
-# Variable filtering pipeline
+# Filtering pipeline
 
-This respository also contains files and a suggested data directly structure to create a pipeline for different levels of csv processing:
+This respository also contains `csv_levels.py` to create a pipeline for different levels of csv processing:
 
 - Level 0: csv format directly from DSS output
 - Level 1: csv with system and validation variables removed through Part C filtering

@@ -1,5 +1,5 @@
 # ================================================
-# csv_levels.py – post-processing pipeline helpers
+# csv_levels.py – post-processing pipeline helpers (in-process)
 # -----------------------------------------------
 # This script takes the Level-0 CSV produced by
 # `dss_to_csv.py` and walks it through successive
